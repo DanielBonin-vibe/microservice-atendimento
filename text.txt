@@ -28,3 +28,42 @@ Chamado:
     - data_criacao
     - data_ultima_atualizacao
     - data_resolucao
+
+Usuarios:
+    criar_usuario()
+    listar_usuarios()
+    buscar_usuario()     -> Serve para buscar um usuário específico
+    pesquisar_usuarios() -> Serve para buscar vários usuários 
+    atualizar_usuario()
+    alterar_status_usuario()
+    excluir_usuario()
+
+Grupo Técnico:
+    criar_grupo_tecnico()
+    listar_grupos_tecnicos()
+    buscar_grupo_tecnico()      -> Serve para buscar um usuário específico
+    pesquisar_grupos_tecnicos() -> Serve para buscar vários usuários 
+    atualizar_grupo_tecnico()
+    excluir_grupo_tecnico()
+
+Técnicos
+    criar_tecnico()
+    listar_tecnicos()
+    buscar_tecnico()     -> Serve para buscar um usuário específico
+    pesquisar_tecnicos() -> Serve para buscar vários usuários 
+    atualizar_tecnico()
+    alterar_status_tecnico()
+    excluir_tecnico()
+
+Chamados:
+    criar_chamado()
+    listar_chamados()
+    buscar_chamado()        -> Serve para buscar um chamado específico
+    pesquisar_chamados()    -> Serve para pesqusiar vários chamados 
+    atualizar_chamado()
+    atribuir_tecnico()
+    alterar_grupo_tecnico()
+    alterar_status_chamado()
+    alterar_prioridade_chamado()
+    solucionar_chamado()
+    reabrir_chamado()
