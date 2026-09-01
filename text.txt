@@ -1,0 +1,30 @@
+Usuário:
+    - id_usuario
+    - nome
+    - email
+    - telefone
+    - data_criacao
+
+Técnico:
+    - id_tecnico
+    - id_grupo_tecnico -> Grupo técnico 
+    - data_criacao
+
+Grupo Técnico:
+    - id_grupo_tecnico -> Obrigatório
+    - nome
+    - descricao
+    - data_criacao
+
+Chamado:
+    - id
+    - id_usuario
+    - id_tecnico
+    - id_grupo_tecnico -> Poderá ser modificado
+    - titulo
+    - descricao
+    - status     -> ABERTO, PENDENTE, SOLUCIONADO
+    - prioridade -> BAIXA, MÉDIA, ALTA, URGENTE
+    - data_criacao
+    - data_ultima_atualizacao
+    - data_resolucao
