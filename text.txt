@@ -30,7 +30,7 @@ Chamado:
     - data_resolucao
 
 Usuarios:
-    criar_usuario()
+    cadastro_usuario()
     listar_usuarios()
     buscar_usuario()     -> Serve para buscar um usuário específico
     pesquisar_usuarios() -> Serve para buscar vários usuários 
