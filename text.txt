@@ -52,7 +52,6 @@ Técnicos
     buscar_tecnico()     -> Serve para buscar um técnico específico
     pesquisar_tecnicos() -> Serve para buscar vário técnicos
     atualizar_tecnico()
-    alterar_status_tecnico()
     excluir_tecnico()
 
 Chamados:
