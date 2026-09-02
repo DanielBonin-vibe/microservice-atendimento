@@ -1,15 +1,15 @@
 from database.session import conectar
 
-def criar_tecnico(nome, cpf_tecnico, email):
+def criar_tecnico(id_grupo_tecnico, nome, cpf_tecnico, email):
     conexao = conectar()
 
     try:
         cursor = conexao.cursor()
 
         cursor.execute("""
-        INSERT INTO tecnicos (nome, cpf_tecnico, email)
-        VALUES (%s, %s, %s)
-        """, (nome, cpf_tecnico, email))
+        INSERT INTO tecnicos (id_grupo_tecnico, nome, cpf_tecnico, email)
+        VALUES (%s, %s, %s, %s)
+        """, (id_grupo_tecnico, nome, cpf_tecnico, email))
 
         resultado = cursor.rowcount
 
