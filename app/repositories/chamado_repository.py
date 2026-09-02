@@ -112,4 +112,60 @@ def buscar_chamado(id_chamado=None, titulo=None):
         cursor.close()
         conexao.close()
 
-def pesqusiar_chamados()
+def pesquisar_chamados(id_usuario=None, id_tecnico=None, id_grupo_tecnico=None, titulo=None, descricao=None, status=None, prioridade=None):
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+        SELECT * FROM chamados 
+        WHERE (%s IS NULL OR id_usuario = %s) 
+            AND (%s IS NULL OR id_tecnico = %s)
+            AND (%s IS NULL OR id_grupo_tecnico = %s)
+            AND (%s IS NULL OR titulo ILIKE %s)
+            AND (%s IS NULL OR descricao ILIKE %s)
+            AND (%s IS NULL OR status = %s)
+            AND (%s IS NULL OR prioridade = %s)
+            """, (id_usuario, id_tecnico, id_grupo_tecnico, f'%{titulo}%', f'%{descricao}%', status, prioridade))
+
+        resultado = cursor.fetchall()
+
+        if not resultado:
+            return []
+
+        return resultado
+
+    except Exception as erro:
+        print(f'Erro ao buscar chamado: {erro}')
+        return None
+    
+    finally:
+        cursor.close()
+        conexao.close()
+
+def atualizar_info_chamado(titulo=None, descricao=None, status=None, prioridade=None):
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+        SELECT * FROM chamados
+        WHERE (%s )
+        """)
+
+        resultado = cursor.fetchall()
+
+        if not resultado:
+            return []
+
+        return resultado
+
+    except Exception as erro:
+        print(f'Erro ao listar chamado: {erro}')
+        return None
+    
+    finally:
+        cursor.close()
+        conexao.close()

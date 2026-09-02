@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS chamados (
         CHECK (status IN ('ABERTO', 'PENDENTE', 'SOLUCIONADO')),
     prioridade VARCHAR(10) NOT NULL DEFAULT 'BAIXA'
         CHECK (status IN ('BAIXO', 'MEDIA', 'ALTA', 'URGENTE'))
+    motivo_pendencia VARCHAR(1000) NOT NULL,
+    motivo_solucao VARCHAR(1000) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     data_ultima_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     data_resolucao TIMESTAMP,

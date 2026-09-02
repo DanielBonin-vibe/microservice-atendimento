@@ -47,7 +47,7 @@ Grupo Técnico:
     excluir_grupo_tecnico()
 
 Técnicos
-    criar_tecnico()
+    criar_tecnico() 
     listar_tecnicos()
     buscar_tecnico()     -> Serve para buscar um técnico específico
     pesquisar_tecnicos() -> Serve para buscar vário técnicos
