@@ -137,35 +137,76 @@ def pesquisar_chamados(id_usuario=None, id_tecnico=None, id_grupo_tecnico=None, 
         return resultado
 
     except Exception as erro:
-        print(f'Erro ao buscar chamado: {erro}')
+        print(f'Erro ao pesquisar chamado: {erro}')
         return None
     
     finally:
         cursor.close()
         conexao.close()
 
-def atualizar_info_chamado(titulo=None, descricao=None, status=None, prioridade=None):
+def atualizar_info_chamado(id_chamado, titulo=None, descricao=None, status=None, prioridade=None):
     conexao = conectar()
 
     try:
         cursor = conexao.cursor()
 
         cursor.execute("""
-        SELECT * FROM chamados
-        WHERE (%s )
-        """)
+        UPDATE chamados 
+        SET titulo = COALESCE(%s, titulo),
+            descricao = COALESCE(%s, descricao),
+            status = COALESCE(%s, status),
+            prioridade = COALESCE(%s, prioridade)
+        WHERE id_chamado = %s
+        """, (titulo, descricao, status, prioridade, id_chamado))
 
-        resultado = cursor.fetchall()
+        resultado = cursor.rowcount
 
-        if not resultado:
-            return []
+        if resultado > 0:
+            conexao.commit()
+            return resultado
 
-        return resultado
+        conexao.rollback()
+        return 0
 
     except Exception as erro:
-        print(f'Erro ao listar chamado: {erro}')
-        return None
+        conexao.rollback()
+        print(f'Erro ao atualizar as informações do chamado: {erro}')
+        return 0
     
     finally:
         cursor.close()
         conexao.close()
+
+def atribuir_tecnico(id_chamado, nome):
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+        UPDATE chamados
+        SET id_tecnico = 
+        (SELECT id_tecnico FROM tecnicos
+        WHERE nome = %s),
+        (data_atualizao = CURRENT_TIMESTAMP
+        WHERE id_chamado = %s)
+        """, (nome, id_chamado))
+
+        resultado = cursor.rowcount
+
+        if resultado > 0:
+            conexao.commit()
+            return resultado
+
+        conexao.rollback()
+        return 0
+
+    except Exception as erro:
+        conexao.rollback()
+        print(f'Erro ao atribuir técnico ao chamado: {erro}')
+        return 0
+    
+    finally:
+        cursor.close()
+        conexao.close()
+
