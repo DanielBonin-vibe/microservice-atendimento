@@ -99,7 +99,6 @@ def buscar_chamado(id_chamado=None, titulo=None):
         else:
             return None
 
-
         resultado = cursor.fetchone()
 
         return resultado
@@ -188,7 +187,7 @@ def atribuir_tecnico(id_chamado, nome):
         SET id_tecnico = 
         (SELECT id_tecnico FROM tecnicos
         WHERE nome = %s),
-        (data_atualizao = CURRENT_TIMESTAMP
+        (data_ultima_atualizacao = CURRENT_TIMESTAMP
         WHERE id_chamado = %s)
         """, (nome, id_chamado))
 
@@ -210,3 +209,160 @@ def atribuir_tecnico(id_chamado, nome):
         cursor.close()
         conexao.close()
 
+def alterar_grupo_tecnico(id_chamado, id_novo_grupo):
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+        UPDATE chamados 
+            SET id_grupo_tecnico = %s,
+            id_tecnico = NULL,
+            data_ultima_atualizacao = CURRENT_TIMESTAMP
+        WHERE id_chamado = %s
+        """,(id_novo_grupo, id_chamado))
+
+        resultado = cursor.rowcount
+
+        if resultado > 0:
+            conexao.commit()
+            return resultado
+
+        conexao.rollback()
+        return 0
+
+    except Exception as erro:
+        conexao.rollback()
+        print(f'Erro ao alterar grupo técnico do chamado: {erro}')
+        return 0
+    
+    finally:
+        cursor.close()
+        conexao.close()
+
+def alterar_status_chamado(id_chamado, novo_status):
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+        UPDATE chamados 
+            SET status = %s,
+            data_ultima_atualizacao = CURRENT_TIMESTAMP
+        WHERE id_chamado = %s 
+        """,(novo_status, id_chamado))
+
+        resultado = cursor.rowcount
+
+        if resultado > 0:
+            conexao.commit()
+            return resultado
+
+        conexao.rollback()
+        return 0
+
+    except Exception as erro:
+        conexao.rollback()
+        print(f'Erro ao alterar status do chamado: {erro}')
+        return 0
+    
+    finally:
+        cursor.close()
+        conexao.close()
+
+def alterar_prioridade_chamado(id_chamado, nova_prioridade):
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+        UPDATE chamados
+            SET prioridade = %s
+            data_ultima_atualizacao = CURRENT_TIMESTAMP
+        WHERE id_chamado = %s
+        """,(nova_prioridade, id_chamado))
+
+        resultado = cursor.rowcount
+
+        if resultado > 0:
+            conexao.commit()
+            return resultado
+
+        conexao.rollback()
+        return 0
+
+    except Exception as erro:
+        conexao.rollback()
+        print(f'Erro ao alterar prioridade do chamado: {erro}')
+        return 0
+    
+    finally:
+        cursor.close()
+        conexao.close()
+
+def solucionar_chamado(id_chamado, novo_status, motivo_solucao):
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+        UPDATE chamados
+            SET motivo_solucao = %s,
+            status = %s,
+            data_ultima_atualizacao = CURRENT_TIMESTAMP
+        WHERE id_chamado = %s
+        """,(motivo_solucao, novo_status, id_chamado))
+
+        resultado = cursor.rowcount
+
+        if resultado > 0:
+            conexao.commit()
+            return resultado
+
+        conexao.rollback()
+        return 0
+
+    except Exception as erro:
+        conexao.rollback()
+        print(f'Erro ao solucionar o chamado: {erro}')
+        return 0
+    
+    finally:
+        cursor.close()
+        conexao.close()
+
+def reabrir_chamado(id_chamado, motivo_reabrir):
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+        UPDATE chamados
+            SET motivo_reabrir = %s,
+            status = 'ABERTO'
+            data_ultima_atualizacao = CURRENT_TIMESTAMP
+        WHERE id_chamado = %s
+        """,(motivo_reabrir, id_chamado))
+
+        resultado = cursor.rowcount
+
+        if resultado > 0:
+            conexao.commit()
+            return resultado
+
+        conexao.rollback()
+        return 0
+
+    except Exception as erro:
+        conexao.rollback()
+        print(f'Erro ao reabrir o chamado: {erro}')
+        return 0
+    
+    finally:
+        cursor.close()
+        conexao.close()
