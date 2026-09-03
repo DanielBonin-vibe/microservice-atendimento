@@ -303,7 +303,7 @@ def alterar_prioridade_chamado(id_chamado, nova_prioridade):
         cursor.close()
         conexao.close()
 
-def solucionar_chamado(id_chamado, novo_status, motivo_solucao):
+def solucionar_chamado(id_chamado, motivo_solucao):
     conexao = conectar()
 
     try:
@@ -312,10 +312,10 @@ def solucionar_chamado(id_chamado, novo_status, motivo_solucao):
         cursor.execute("""
         UPDATE chamados
             SET motivo_solucao = %s,
-            status = %s,
+            status = 'SOLUCIONADO',
             data_ultima_atualizacao = CURRENT_TIMESTAMP
         WHERE id_chamado = %s
-        """,(motivo_solucao, novo_status, id_chamado))
+        """,(motivo_solucao, id_chamado))
 
         resultado = cursor.rowcount
 
