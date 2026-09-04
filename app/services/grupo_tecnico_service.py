@@ -42,7 +42,7 @@ def pesquisar_grupos_tecnicos_service(nome=None, descricao=None):
     if (nome is None or not nome.strip()) and (descricao is None or not descricao.strip()):
         return 'Ao menos uma informação deve ser passada nos campos.'
 
-    resultado = grupo_tecnico_repository.pesquisar_grupos_tecnicos(nome=None, descricao=None)
+    resultado = grupo_tecnico_repository.pesquisar_grupos_tecnicos(nome, descricao)
 
     if not resultado:
         return 'Nenhuma grupo técnico foi localizado.'
@@ -61,7 +61,7 @@ def atualizar_grupo_tecnico_service(nome_inicial, nome_novo=None, descricao=None
     if not grupo_tecnico:
         return 'O nome informado não se relaciona a nenhum grupo técnico cadastrado.'
 
-    resultado = grupo_tecnico_repository.atualizar_grupo_tecnico(nome_inicial, nome_novo=None, descricao=None)
+    resultado = grupo_tecnico_repository.atualizar_grupo_tecnico(nome_inicial, nome_novo, descricao)
 
     if resultado == 0:
         return 'Não foi possível atualizar o grupo técnico.'
