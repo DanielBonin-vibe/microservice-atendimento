@@ -201,7 +201,7 @@ def reabrir_chamado_service(id_chamado, motivo_reabrir):
         return 'Preencha o campo ID do Chamado.'
 
     if motivo_reabrir is None or not motivo_reabrir.strip():
-        return 'Preencha o campo Motivo da reabertura.'
+        return 'Preencha o campo Motivo da Reabertura.'
 
     chamado = chamado_repository.buscar_chamado(id_chamado)
 
