@@ -57,7 +57,7 @@ def pesquisar_tecnicos_service(nome=None, id_grupo_tecnico=None):
 
     return resultado 
 
-def atualizar_tecnico_servic(cpf_tecnico_inicial, nome=None, cpf_tecnico=None, email=None):
+def atualizar_tecnico_service(cpf_tecnico_inicial, nome=None, cpf_tecnico=None, email=None):
     if cpf_tecnico_inicial is None or not cpf_tecnico_inicial.strip():
         return 'Preencha o campo CPF Técnico inicial.'
 
