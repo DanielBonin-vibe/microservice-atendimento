@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     cpf_usuario VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(50) NOT NULL UNIQUE,
     telefone VARCHAR(25) NOT NULL,
+    senha VARCHAR(255) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -21,6 +22,7 @@ CREATE TABLE IF NOT EXISTS tecnicos (
     nome VARCHAR(150) NOT NULL UNIQUE, 
     cpf_tecnico VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (id_grupo_tecnico) REFERENCES grupos_tecnicos(id_grupo_tecnico)
