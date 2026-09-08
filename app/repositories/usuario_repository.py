@@ -62,7 +62,7 @@ def buscar_usuario(busca):
             OR cpf_usuario ILIKE %s
             OR email ILIKE %s
             OR telefone ILIKE %s
-        """, (f'%{busca}%'), (f'%{busca}%'), (f'%{busca}%'), (f'%{busca}%'))
+        """, (f'%{busca}%', f'%{busca}%', f'%{busca}%', f'%{busca}%'))
 
         resultado = cursor.fetchall()
 
@@ -116,7 +116,7 @@ def atualizar_usuario(cpf_usuario_inicial, nome=None, cpf_usuario_novo=None, ema
         cursor.execute("""
         UPDATE usuarios
         SET nome = COALESCE(%s, nome),
-            cpf_usuario_novo = COALESCE(%s, cpf_usuario_novo),
+            cpf_usuario = COALESCE(%s, cpf_usuario),
             email = COALESCE(%s, email),
             telefone = COALESCE(%s, telefone)
         WHERE cpf_usuario = %s
@@ -147,8 +147,8 @@ def excluir_usuario(cpf_usuario):
         cursor = conexao.cursor()
 
         cursor.execute("""
-        REMOVE FROM usuarios
-        WHERE cpf = %s
+        DELETE FROM usuarios
+        WHERE cpf_usuario = %s
         """, (cpf_usuario,))
 
         resultado = cursor.rowcount
