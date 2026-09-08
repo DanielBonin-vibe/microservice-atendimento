@@ -1,4 +1,4 @@
-from repositories import chamado_repository, usuario_repository, grupo_tecnico_repository, tecnico_repository
+from app.repositories import chamado_repository, usuario_repository, grupo_tecnico_repository, tecnico_repository
 
 def criar_chamado_service(cpf_usuario, nome_grupo, titulo, descricao, prioridade):
     if cpf_usuario is None or not cpf_usuario.strip():

@@ -1,4 +1,4 @@
-from repositories import grupo_tecnico_repository
+from app.repositories import grupo_tecnico_repository
 
 def criar_grupo_tecnico_service(nome, descricao):
     if nome is None or not nome.strip():

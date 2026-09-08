@@ -1,4 +1,4 @@
-from database.session import conectar
+from app.database.session import conectar
 
 def criar_chamado(cpf_usuario, nome_grupo, titulo, descricao, prioridade):
     conexao = conectar()

@@ -1,4 +1,4 @@
-from database.session import conectar
+from app.database.session import conectar
 
 def criar_tecnico(id_grupo_tecnico, nome, cpf_tecnico, email):
     conexao = conectar()

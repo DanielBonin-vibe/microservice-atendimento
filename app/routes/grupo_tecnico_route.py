@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
-from services import grupo_tecnico_service
+from app.services import grupo_tecnico_service
 
 router = APIRouter(
     prefix = '/grupo_tecnico',

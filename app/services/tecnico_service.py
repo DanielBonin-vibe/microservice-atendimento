@@ -1,4 +1,4 @@
-from repositories import tecnico_repository
+from app.repositories import tecnico_repository
 
 def criar_tecnico_service(id_grupo_tecnico, nome, cpf_tecnico, email):
     if id_grupo_tecnico is None:

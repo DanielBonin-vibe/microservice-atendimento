@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
-from services import chamado_service
+from app.services import chamado_service
 
 router = APIRouter(
     prefix='/chamado',

@@ -1,4 +1,4 @@
-from repositories import usuario_repository
+from app.repositories import usuario_repository
 
 def cadastro_usuario_service(nome, cpf_usuario, email, telefone):
 

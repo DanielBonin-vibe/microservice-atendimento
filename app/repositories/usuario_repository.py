@@ -1,4 +1,4 @@
-from database.session import conectar
+from app.database.session import conectar
 
 def cadastro_usuario(nome, cpf_usuario, email, telefone):
     conexao = conectar()
