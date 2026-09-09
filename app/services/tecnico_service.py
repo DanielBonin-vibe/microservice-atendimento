@@ -1,26 +1,18 @@
 from app.repositories import tecnico_repository
+from app.security.hash import gerar_hash
 
-def criar_tecnico_service(id_grupo_tecnico, nome, cpf_tecnico, email):
+def criar_tecnico_service(id_grupo_tecnico, nome, cpf_tecnico, email, senha):
     if id_grupo_tecnico is None:
         return 'Preencha o campo ID do grupo técnico.'
-
-    if nome is None or not nome.strip():
-        return 'Preencha o campo Nome.'
-
-    if cpf_tecnico is None or not cpf_tecnico.strip():
-        return 'Preencha o campo CPF do Técnico.'
-
-    if email is None or not email.strip():
-        return 'Preencha o campo email.'
-    
 
     tecnico = tecnico_repository.buscar_tecnico(cpf_tecnico)
 
     if tecnico is not None:
         return 'O CPF informado já está vinculado a outro técnico.'
     
+    senha_hash = gerar_hash(senha)
 
-    resultado = tecnico_repository.criar_tecnico(nome, cpf_tecnico, email)
+    resultado = tecnico_repository.criar_tecnico(nome, cpf_tecnico, email, senha_hash)
 
     if resultado == 0:
         return 'Erro ao cadastrar técnico.'
@@ -74,6 +66,31 @@ def atualizar_tecnico_service(cpf_tecnico_inicial, nome=None, cpf_tecnico=None, 
 
     if resultado == 0:
         return 'Não foi possível atualizar as informações de cadastro técnico.'
+
+    return resultado
+
+def alterar_senha_tecnico(cpf_tecnico, senha_atual, senha_nova):
+    tecnico = tecnico_repository.buscar_tecnico(cpf_tecnico)
+
+    if not tecnico:
+        return 'Não há nenhum técnico vinculado ao CPF infromado.'
+
+    senha_hash_atual = tecnico[5]
+
+    senha_correta = hash.verificar_senha(senha_atual, senha_hash_atual)
+
+    if not senha_correta:
+        return 'Senha atual incorreta'
+    
+
+    senha_hash_nova = hash.gerar_senha(senha_nova)
+
+
+    resultado = tecnico_repository.alterar_senha_tecnico(cpf_tecnico, senha_hash_nova)
+
+    if resultado == 0:
+        return 'Erro ao alterar a senha do técnico.'
+    
 
     return resultado
 

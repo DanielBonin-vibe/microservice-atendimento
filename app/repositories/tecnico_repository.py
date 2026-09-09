@@ -7,9 +7,9 @@ def criar_tecnico(id_grupo_tecnico, nome, cpf_tecnico, email, senha_hash):
         cursor = conexao.cursor()
 
         cursor.execute("""
-        INSERT INTO tecnicos (id_grupo_tecnico, nome, cpf_tecnico, email)
-        VALUES (%s, %s, %s, %s)
-        """, (id_grupo_tecnico, nome, cpf_tecnico, email))
+        INSERT INTO tecnicos (id_grupo_tecnico, nome, cpf_tecnico, email, senha_hash)
+        VALUES (%s, %s, %s, %s, %s)
+        """, (id_grupo_tecnico, nome, cpf_tecnico, email, senha_hash))
 
         resultado = cursor.rowcount
 
@@ -130,6 +130,36 @@ def atualizar_tecnico(cpf_tecnico_inicial, nome=None, cpf_tecnico=None, email=No
     except Exception as erro:
         conexao.rollback()
         print(f'Erro ao atualizar técnico: {erro}')
+        return 0
+
+    finally:
+        cursor.close()
+        conexao.close()
+
+def alterar_senha_tecnico(cpf_tecnico, senha_hash_nova):
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+        UPDATE tecnicos
+        SET senha_hash = %s
+        WHERE cpf_tecnico = %s
+        """, (senha_hash_nova, cpf_tecnico))
+
+        resultado = cursor.rowcount
+
+        if resultado > 0:
+            conexao.commit()
+            return resultado
+
+        conexao.rollback()
+        return 0
+
+    except Exception as erro:
+        conexao.rollback()
+        print(f'Erro ao atualizar senha do técnico: {erro}')
         return 0
 
     finally:

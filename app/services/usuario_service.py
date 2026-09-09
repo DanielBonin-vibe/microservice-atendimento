@@ -18,9 +18,8 @@ def cadastro_usuario_service(nome, cpf_usuario, email, telefone, senha):
     if usuario is not None:
         return 'Esse Telefone já está vinculado a um usuário.'
 
-
     senha_hash = gerar_hash(senha)
-
+    
 
     resultado = usuario_repository.cadastro_usuario(nome, cpf_usuario, email, telefone, senha_hash)
 
