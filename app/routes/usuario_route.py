@@ -9,7 +9,7 @@ router = APIRouter(
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
 def criar_usuario(usuario: UsuarioCriacao):
-    resultado = usuario_service.cadastro_usuario_service(
+    resultado = usuario_service.cadastro_usuario(
         usuario.nome, usuario.cpf_usuario, usuario.email, usuario.telefone)
 
     if isinstance(resultado, str):
@@ -22,7 +22,7 @@ def criar_usuario(usuario: UsuarioCriacao):
 
 @router.get('/', status_code=status.HTTP_200_OK)
 def listar_usuario():
-    resultado = usuario_service.listar_usuario_service()
+    resultado = usuario_service.listar_usuario()
 
     if isinstance(resultado, str):
         raise HTTPException (
@@ -34,7 +34,7 @@ def listar_usuario():
 
 @router.get('/buscar/{busca}', status_code=status.HTTP_200_OK)
 def buscar_usuario(busca):
-    resultado = usuario_service.buscar_usuario_service(busca)
+    resultado = usuario_service.buscar_usuario(busca)
 
     if isinstance(resultado, str):
         raise HTTPException(
@@ -47,7 +47,7 @@ def buscar_usuario(busca):
 @router.get('/pesquisar', status_code=status.HTTP_200_OK)
 def pesquisar_usuarios(nome: str | None = None, cpf_usuario: str | None = None, email: str | None = None, telefone: str | None = None):
 
-    resultado = usuario_service.pesquisar_usuarios_service(nome, cpf_usuario, email, telefone)
+    resultado = usuario_service.pesquisar_usuarios(nome, cpf_usuario, email, telefone)
 
     if isinstance(resultado, str):
         raise HTTPException(
@@ -59,7 +59,7 @@ def pesquisar_usuarios(nome: str | None = None, cpf_usuario: str | None = None, 
 
 @router.put('/{cpf_usuario_inicial}', status_code=status.HTTP_200_OK)
 def atualizar_usuario(cpf_usuario_inicial: str, usuario: UsuarioAtualizacao):
-    resultado = usuario_service.atualizar_usuario_service(
+    resultado = usuario_service.atualizar_usuario(
         cpf_usuario_inicial,
         usuario.nome,
         usuario.cpf_usuario_novo,
@@ -77,7 +77,7 @@ def atualizar_usuario(cpf_usuario_inicial: str, usuario: UsuarioAtualizacao):
 
 @router.delete('/{cpf_usuario}', status_code=status.HTTP_200_OK)
 def excluir_usuario(cpf_usuario: str):
-    resultado = usuario_service.excluir_usuario_service(cpf_usuario)
+    resultado = usuario_service.excluir_usuario(cpf_usuario)
 
     if isinstance(resultado, str):
         raise HTTPException(
