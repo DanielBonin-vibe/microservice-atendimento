@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from app.services import usuario_service
-from app.schemas.usuario import UsuarioCriacao, UsuarioAtualizacao
+from app.schemas.usuario import UsuarioCriacao, UsuarioAtualizacao, AlterarSenhaUsuario
 
 router = APIRouter(
     prefix='/usuarios',
@@ -10,7 +10,7 @@ router = APIRouter(
 @router.post('/', status_code=status.HTTP_201_CREATED)
 def criar_usuario(usuario: UsuarioCriacao):
     resultado = usuario_service.cadastro_usuario(
-        usuario.nome, usuario.cpf_usuario, usuario.email, usuario.telefone)
+        usuario.nome, usuario.cpf_usuario, usuario.email, usuario.telefone, usuario.senha)
 
     if isinstance(resultado, str):
         raise HTTPException(
@@ -66,6 +66,18 @@ def atualizar_usuario(cpf_usuario_inicial: str, usuario: UsuarioAtualizacao):
         usuario.email,
         usuario.telefone
     )
+
+    if isinstance(resultado, str):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=resultado
+        )
+
+    return resultado
+
+@router.patch('/{cpf_usuario}/senha', status_code=status.HTTP_200_OK)
+def alterar_senha_usuario(cpf_usuario: str, dados: AlterarSenhaUsuario):
+    resultado = usuario_service.alterar_senha(cpf_usuario, dados.senha_atual, dados.senha_nova)
 
     if isinstance(resultado, str):
         raise HTTPException(

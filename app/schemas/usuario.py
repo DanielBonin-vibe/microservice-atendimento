@@ -13,3 +13,8 @@ class UsuarioAtualizacao(BaseModel):
     email: EmailStr | None = None
     telefone: str | None = Field(default=None, min_length=10, max_length=15)
     senha: str | None = Field(default=None, min_length=8, max_length=100)
+
+
+class AlterarSenhaUsuario(BaseModel):
+    senha_atual: str = Field(min_length=8, max_length=100)
+    senha_nova: str = Field(min_length=8, max_length=100)
