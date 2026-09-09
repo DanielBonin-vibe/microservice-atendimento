@@ -1,7 +1,7 @@
 from app.repositories import usuario_repository
 from app.security.hash import gerar_hash, verificar_senha
 
-def cadastro_usuario_service(nome, cpf_usuario, email, telefone):
+def cadastro_usuario_service(nome, cpf_usuario, email, telefone, senha):
 
     usuario = usuario_repository.buscar_usuario(cpf_usuario)
 
@@ -19,7 +19,10 @@ def cadastro_usuario_service(nome, cpf_usuario, email, telefone):
         return 'Esse Telefone já está vinculado a um usuário.'
 
 
-    resultado = usuario_repository.cadastro_usuario(nome, cpf_usuario, email, telefone)
+    senha_hash = gerar_hash(senha)
+
+
+    resultado = usuario_repository.cadastro_usuario(nome, cpf_usuario, email, telefone, senha_hash)
 
     if resultado == 0:
         return 'Não foi possível cadastrar o usuário.'

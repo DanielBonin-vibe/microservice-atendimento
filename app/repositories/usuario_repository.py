@@ -1,15 +1,15 @@
 from app.database.session import conectar
 
-def cadastro_usuario(nome, cpf_usuario, email, telefone, senha):
+def cadastro_usuario(nome, cpf_usuario, email, telefone, senha_hash):
     conexao = conectar()
 
     try:
         cursor = conexao.cursor()
 
         cursor.execute("""
-        INSERT INTO usuarios (nome, cpf_usuario, email, telefone, senha)
+        INSERT INTO usuarios (nome, cpf_usuario, email, telefone, senha_hash)
         VALUES (%s, %s, %s, %s, %s)
-        """, (nome, cpf_usuario, email, telefone, senha))
+        """, (nome, cpf_usuario, email, telefone, senha_hash))
 
         resultado = cursor.rowcount
 

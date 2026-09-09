@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, status
-from pydantic import BaseModel, Field
 from app.services import usuario_service
 from app.schemas.usuario import UsuarioCriacao, UsuarioAtualizacao
 
