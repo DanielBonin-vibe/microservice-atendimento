@@ -1,15 +1,15 @@
 from app.database.session import conectar
 
-def cadastro_usuario(nome, cpf_usuario, email, telefone):
+def cadastro_usuario(nome, cpf_usuario, email, telefone, senha):
     conexao = conectar()
 
     try:
         cursor = conexao.cursor()
 
         cursor.execute("""
-        INSERT INTO usuarios (nome, cpf_usuario, email, telefone)
-        VALUES (%s, %s, %s, %s)
-        """, (nome, cpf_usuario, email, telefone))
+        INSERT INTO usuarios (nome, cpf_usuario, email, telefone, senha)
+        VALUES (%s, %s, %s, %s, %s)
+        """, (nome, cpf_usuario, email, telefone, senha))
 
         resultado = cursor.rowcount
 
@@ -74,6 +74,32 @@ def buscar_usuario(busca):
         cursor.close()
         conexao.close()
 
+def buscar_usuario_cpf(cpf_usuario):
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+        SELECT * FROM usuarios
+        WHERE cpf_usuario = %s
+        """, (cpf_usuario))
+
+        resultado = cursor.fetchone()
+
+        if resultado > 0:
+            return resultado
+
+        return 0
+
+    except Exception as erro:
+        print(f'Erro ao buscar usuário pelo CPF: {erro}')
+        return 0
+    
+    finally:
+        cursor.close()
+        conexao.close()    
+
 def pesquisar_usuarios(nome=None, cpf_usuario=None, email=None, telefone=None):
     conexao = conectar()
 
@@ -134,6 +160,35 @@ def atualizar_usuario(cpf_usuario_inicial, nome=None, cpf_usuario_novo=None, ema
     except Exception as erro:
         conexao.rollback()
         print(f'Erro ao atualizar usuário: {erro}')
+        return 0
+    
+    finally:
+        cursor.close()
+        conexao.close()
+
+def alterar_senha_usuario(senha_hash_nova, cpf_usuario):
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+        UPDATE usuarios
+        SET senha_hash = %s
+        WHERE cpf_usuario = %s
+        """, (senha_hash_nova, cpf_usuario))
+
+        resultado = cursor.rowcount
+
+        if resultado > 0:
+            return resultado
+
+        conexao.rollback()
+        return 0
+
+    except Exception as erro:
+        conexao.rollback()
+        print(f'Erro ao aletarr senha: {erro}')
         return 0
     
     finally:

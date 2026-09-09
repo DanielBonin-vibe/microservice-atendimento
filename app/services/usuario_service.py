@@ -1,18 +1,7 @@
 from app.repositories import usuario_repository
+from app.security.hash import gerar_hash, verificar_senha
 
 def cadastro_usuario_service(nome, cpf_usuario, email, telefone):
-
-    if nome is None or not nome.strip():
-        return 'Preencha o campo de Nome.'
-    
-    if cpf_usuario is None or not cpf_usuario.strip():
-        return 'Preencha o campo de CPF.'
-
-    if email is None or not email.strip():
-        return 'Preencha o campo de Email.'
-
-    if telefone is None or not telefone.strip():
-        return 'Preencha o campo de Telefone.'
 
     usuario = usuario_repository.buscar_usuario(cpf_usuario)
 
@@ -66,9 +55,6 @@ def pesquisar_usuarios_service(nome=None, cpf_usuario=None, email=None, telefone
 
 def atualizar_usuario_service(cpf_usuario_inicial, nome=None, cpf_usuario_novo=None, email=None, telefone=None):
 
-    if cpf_usuario_inicial is None or not cpf_usuario_inicial.strip():
-        return 'Preencha o campo CPF.'
-
     usuario = usuario_repository.buscar_usuario(cpf_usuario_inicial)
 
     if usuario is None:
@@ -98,6 +84,31 @@ def atualizar_usuario_service(cpf_usuario_inicial, nome=None, cpf_usuario_novo=N
 
     if resultado == 0:
         return 'Não foi possível atualizar o cadastro do usuário.'
+
+    return resultado
+
+def alterar_senha_service(cpf_usuario, senha_atual, senha_nova):
+    usuario = usuario_repository.buscar_usuario_cpf(cpf_usuario)
+
+    if usuario == 0:
+        return 'Não foi possível localizar nenhum usuário.'
+    
+
+    senha_hash_atual = usuario[5]
+
+    senha_correta = verificar_senha(senha_atual, senha_hash_atual)
+
+    if not senha_correta:
+        return 'Senha atual incorreta.'
+
+
+    senha_hash_nova = gerar_hash(senha_nova)
+
+
+    resultado = usuario_repository.alterar_senha_usuario(senha_hash_nova, cpf_usuario)
+
+    if resultado == 0:
+        return 'Não foi possível alterar a senha do usuário.'
 
     return resultado
 
