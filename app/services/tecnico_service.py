@@ -1,112 +1,111 @@
 from app.repositories import tecnico_repository
-from app.security.hash import gerar_hash
+from app.security.hash import gerar_hash, verificar_senha
 
-def criar_tecnico_service(id_grupo_tecnico, nome, cpf_tecnico, email, senha):
-    if id_grupo_tecnico is None:
-        return 'Preencha o campo ID do grupo técnico.'
+class TecnicoService:
+    def __init__(self, tecnico_repository):
+        self.tecnico_repository = tecnico_repository
 
-    tecnico = tecnico_repository.buscar_tecnico(cpf_tecnico)
+    def criar_tecnico(self, id_grupo_tecnico, nome, cpf_tecnico, email, senha):
+        if id_grupo_tecnico is None:
+            return 'Preencha o campo ID do grupo técnico.'
 
-    if tecnico is not None:
-        return 'O CPF informado já está vinculado a outro técnico.'
-    
-    senha_hash = gerar_hash(senha)
+        tecnico = self.tecnico_repository.buscar_tecnico(cpf_tecnico)
 
-    resultado = tecnico_repository.criar_tecnico(nome, cpf_tecnico, email, senha_hash)
+        if tecnico is not None:
+            return 'O CPF informado já está vinculado a outro técnico.'
+        
+        senha_hash = gerar_hash(senha)
 
-    if resultado == 0:
-        return 'Erro ao cadastrar técnico.'
+        resultado = self.tecnico_repository.criar_tecnico(nome, cpf_tecnico, email, senha_hash)
 
-    return resultado
+        if resultado == 0:
+            return 'Erro ao cadastrar técnico.'
 
-def listar_tecnicos_service():
-    resultado = tecnico_repository.listar_tecnicos()
+        return resultado
 
-    if not resultado:
-        return 'Não há nenhum técnico a listar.'
+    def listar_tecnicos(self):
+        resultado = self.tecnico_repository.listar_tecnicos()
 
-    return resultado
+        if not resultado:
+            return 'Não há nenhum técnico a listar.'
 
-def buscar_tecnico_service(cpf_tecnico):
-    if cpf_tecnico is None or not cpf_tecnico.strip():
-        return 'Prencha o campo CPF do Técnico.'
+        return resultado
 
-    resultado = tecnico_repository.buscar_tecnico(cpf_tecnico)
+    def buscar_tecnico(self, cpf_tecnico):
 
-    if not resultado:
-        return 'Técnico não encontrado.'
+        resultado = self.tecnico_repository.buscar_tecnico(cpf_tecnico)
 
-    return resultado
+        if not resultado:
+            return 'Técnico não encontrado.'
 
-def pesquisar_tecnicos_service(nome=None, id_grupo_tecnico=None):
-    if (nome is None or not nome.strip()) and (id_grupo_tecnico is None):
-        return 'Ao menos um filtro deve ser selecionado.'
+        return resultado
 
-    resultado = tecnico_repository.pesquisar_tecnicos(nome=None, id_grupo_tecnico=None)
+    def pesquisar_tecnicos(self, nome=None, id_grupo_tecnico=None):
 
-    if not resultado:
-        return 'Não foi possível localizar nenhum técnico.'
+        resultado = self.tecnico_repository.pesquisar_tecnicos(nome=nome, id_grupo_tecnico=id_grupo_tecnico)
 
-    return resultado 
+        if not resultado:
+            return 'Não foi possível localizar nenhum técnico.'
 
-def atualizar_tecnico_service(cpf_tecnico_inicial, nome=None, cpf_tecnico=None, email=None):
-    if cpf_tecnico_inicial is None or not cpf_tecnico_inicial.strip():
-        return 'Preencha o campo CPF Técnico inicial.'
+        return resultado 
 
-    if (nome is None or not nome.strip()) and (cpf_tecnico is None or not cpf_tecnico.strip()) and (email is None is email.strip()):
-        return 'Preencha ao menos um campo para atualizar.'
+    def atualizar_tecnico(self, cpf_tecnico_inicial, nome=None, cpf_tecnico=None, email=None):
+        if cpf_tecnico_inicial is None or not cpf_tecnico_inicial.strip():
+            return 'Preencha o campo CPF Técnico inicial.'
 
-    tecnico = tecnico_repository.buscar_tecnico(cpf_tecnico_inicial)
+        tecnico = self.tecnico_repository.buscar_tecnico(cpf_tecnico_inicial)
 
-    if not tecnico:
-        return 'Não foi possível localizar nenhum técnico vinculado ao CPF informado.'
+        if not tecnico:
+            return 'Não foi possível localizar nenhum técnico vinculado ao CPF informado.'
 
 
-    resultado = tecnico_repository.atualizar_tecnico(cpf_tecnico_inicial, nome=nome, cpf_tecnico=cpf_tecnico, email=email)
+        resultado = self.tecnico_repository.atualizar_tecnico(cpf_tecnico_inicial, nome=nome, cpf_tecnico=cpf_tecnico, email=email)
 
-    if resultado == 0:
-        return 'Não foi possível atualizar as informações de cadastro técnico.'
+        if resultado == 0:
+            return 'Não foi possível atualizar as informações de cadastro técnico.'
 
-    return resultado
+        return resultado
 
-def alterar_senha_tecnico(cpf_tecnico, senha_atual, senha_nova):
-    tecnico = tecnico_repository.buscar_tecnico(cpf_tecnico)
+    def alterar_senha_tecnico(self, cpf_tecnico, senha_atual, senha_nova):
 
-    if not tecnico:
-        return 'Não há nenhum técnico vinculado ao CPF infromado.'
+        tecnico = self.tecnico_repository.buscar_tecnico(cpf_tecnico)
 
-    senha_hash_atual = tecnico[5]
+        if not tecnico:
+            return 'Não há nenhum técnico vinculado ao CPF infromado.'
+        
 
-    senha_correta = hash.verificar_senha(senha_atual, senha_hash_atual)
+        senha_hash_atual = tecnico[5]
 
-    if not senha_correta:
-        return 'Senha atual incorreta'
-    
+        senha_correta = verificar_senha(senha_atual, senha_hash_atual)
 
-    senha_hash_nova = hash.gerar_senha(senha_nova)
+        if not senha_correta:
+            return 'Senha atual incorreta'
+        
 
-
-    resultado = tecnico_repository.alterar_senha_tecnico(cpf_tecnico, senha_hash_nova)
-
-    if resultado == 0:
-        return 'Erro ao alterar a senha do técnico.'
-    
-
-    return resultado
-
-def excluir_tecnico_service(cpf_tecnico):
-    if cpf_tecnico is None or not cpf_tecnico.strip():
-        return 'Preencha o campo CPF Técnico.'
-
-    tecnico = tecnico_repository.buscar_tecnico(cpf_tecnico)
-
-    if not tecnico:
-        return 'Não foi possível localizar nenhum técnico vinculado ao CPF informado.'
+        senha_hash_nova = gerar_hash(senha_nova)    
 
 
-    resultado = tecnico_repository.excluir_tecnico(cpf_tecnico)
+        resultado = self.tecnico_repository.alterar_senha_tecnico(cpf_tecnico, senha_hash_nova)
 
-    if resultado == 0:
-        return 'não foi possível excluir técnico.'
+        if resultado == 0:
+            return 'Erro ao alterar a senha do técnico.'
+        
 
-    return resultado
+        return resultado
+
+    def excluir_tecnico(self, cpf_tecnico):
+
+        tecnico = self.tecnico_repository.buscar_tecnico(cpf_tecnico)
+
+        if not tecnico:
+            return 'Não foi possível localizar nenhum técnico vinculado ao CPF informado.'
+
+
+        resultado = self.tecnico_repository.excluir_tecnico(cpf_tecnico)
+
+        if resultado == 0:
+            return 'não foi possível excluir técnico.'
+
+        return resultado
+
+tecnico_service = TecnicoService(tecnico_repository)

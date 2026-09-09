@@ -1,197 +1,208 @@
 from app.database.session import conectar
 
-def criar_tecnico(id_grupo_tecnico, nome, cpf_tecnico, email, senha_hash):
-    conexao = conectar()
+class TecnicoRepository:
+    def __init__(self, conectar):
+        self.conectar_banco = conectar
 
-    try:
-        cursor = conexao.cursor()
+    def criar_tecnico(self, id_grupo_tecnico, nome, cpf_tecnico, email, senha_hash):
+        conexao = self.conectar_banco()
 
-        cursor.execute("""
-        INSERT INTO tecnicos (id_grupo_tecnico, nome, cpf_tecnico, email, senha_hash)
-        VALUES (%s, %s, %s, %s, %s)
-        """, (id_grupo_tecnico, nome, cpf_tecnico, email, senha_hash))
+        try:
+            cursor = conexao.cursor()
 
-        resultado = cursor.rowcount
-
-        if resultado > 0:
-            conexao.commit()
-            return resultado
-
-        conexao.rollback()
-        return 0
-
-    except Exception as erro:
-        conexao.rollback()
-        print(f'Erro ao criar técnico: {erro}')
-        return 0
-
-    finally:
-        cursor.close()
-        conexao.close()
-
-def listar_tecnicos():
-    conexao = conectar()
-
-    try:
-        cursor = conexao.cursor()
-
-        cursor.execute("""
-        SELECT * FROM tecnicos
-        """)
-
-        resultado = cursor.fetchall()
-
-        return resultado
-
-    except Exception as erro:
-        print(f'Erro ao listar técnicos: {erro}')
-        return None
-
-    finally:
-        cursor.close()
-        conexao.close()
-
-def buscar_tecnico(cpf_tecnico):
-    conexao = conectar()
-
-    try:
-        cursor = conexao.cursor()
-
-        cursor.execute("""
-        SELECT * FROM tecnicos
-        WHERE cpf_tecnico = %s
-        """, (cpf_tecnico,))
-
-        resultado = cursor.fetchall()
-
-        return resultado
-
-    except Exception as erro:
-        print(f'Erro ao buscar técnico: {erro}')
-        return None
-
-    finally:
-        cursor.close()
-        conexao.close()
-
-def pesquisar_tecnicos(nome=None, id_grupo_tecnico=None):
-    conexao = conectar()
-
-    try:
-        cursor = conexao.cursor()
-
-        if nome is not None:
             cursor.execute("""
-                SELECT * FROM tecnicos
-                WHERE nome ILIKE %s
-            """, (f'%{nome}%',))
+            INSERT INTO tecnicos (id_grupo_tecnico, nome, cpf_tecnico, email, senha_hash)
+            VALUES (%s, %s, %s, %s, %s)
+            """, (id_grupo_tecnico, nome, cpf_tecnico, email, senha_hash))
 
-        else:
+            resultado = cursor.rowcount
+
+            if resultado > 0:
+                conexao.commit()
+                return resultado
+
+            conexao.rollback()
+            return 0
+
+        except Exception as erro:
+            conexao.rollback()
+            print(f'Erro ao criar técnico: {erro}')
+            return 0
+
+        finally:
+            cursor.close()
+            conexao.close()
+
+    def listar_tecnicos(self):
+        conexao = self.conectar_banco()
+
+        try:
+            cursor = conexao.cursor()
+
             cursor.execute("""
-                SELECT * FROM tecnicos
-                WHERE id_grupo_tecnico = %s
-            """, (id_grupo_tecnico,))
+            SELECT * FROM tecnicos
+            """)
 
-        resultado = cursor.fetchall()
+            resultado = cursor.fetchall()
 
-        return resultado
-
-    except Exception as erro:
-        print(f'Erro ao pesquisar técnicos: {erro}')
-        return None
-
-    finally:
-        cursor.close()
-        conexao.close()
-
-def atualizar_tecnico(cpf_tecnico_inicial, nome=None, cpf_tecnico=None, email=None):
-    conexao = conectar()
-
-    try:
-        cursor = conexao.cursor()
-
-        cursor.execute("""
-        UPDATE tecnicos 
-        SET nome = COALESCE(%s, nome), 
-        cpf_tecnico = COALESCE(%s, cpf_tecnico),
-        email = COALESCE(%s, email)
-        WHERE cpf_tecnico_inicial = %s
-        """, (nome, cpf_tecnico, email, cpf_tecnico_inicial))
-
-        resultado = cursor.rowcount
-
-        if resultado > 0:
-            conexao.commit()
             return resultado
 
-        conexao.rollback()
-        return 0
+        except Exception as erro:
+            print(f'Erro ao listar técnicos: {erro}')
+            return None
 
-    except Exception as erro:
-        conexao.rollback()
-        print(f'Erro ao atualizar técnico: {erro}')
-        return 0
+        finally:
+            cursor.close()
+            conexao.close()
 
-    finally:
-        cursor.close()
-        conexao.close()
+    def buscar_tecnico(self, cpf_tecnico):
+        conexao = self.conectar_banco()
 
-def alterar_senha_tecnico(cpf_tecnico, senha_hash_nova):
-    conexao = conectar()
+        try:
+            cursor = conexao.cursor()
 
-    try:
-        cursor = conexao.cursor()
+            cursor.execute("""
+            SELECT * FROM tecnicos
+            WHERE cpf_tecnico = %s
+            """, (cpf_tecnico,))
 
-        cursor.execute("""
-        UPDATE tecnicos
-        SET senha_hash = %s
-        WHERE cpf_tecnico = %s
-        """, (senha_hash_nova, cpf_tecnico))
+            resultado = cursor.fetchone()
 
-        resultado = cursor.rowcount
+            if not resultado:
+                return None
 
-        if resultado > 0:
-            conexao.commit()
+            return resultado
+        
+        except Exception as erro:
+            print(f'Erro ao buscar técnico: {erro}')
+            return None
+
+        finally:
+            cursor.close()
+            conexao.close()
+
+    def pesquisar_tecnicos(self, nome=None, id_grupo_tecnico=None):
+        conexao = self.conectar_banco()
+
+        try:
+            cursor = conexao.cursor()
+
+            if nome is not None:
+                cursor.execute("""
+                    SELECT * FROM tecnicos
+                    WHERE nome ILIKE %s
+                """, (f'%{nome}%',))
+
+            else:
+                cursor.execute("""
+                    SELECT * FROM tecnicos
+                    WHERE id_grupo_tecnico = %s
+                """, (id_grupo_tecnico,))
+
+            resultado = cursor.fetchall()
+
+            if not resultado:
+                return []
+
             return resultado
 
-        conexao.rollback()
-        return 0
+        except Exception as erro:
+            print(f'Erro ao pesquisar técnicos: {erro}')
+            return []
 
-    except Exception as erro:
-        conexao.rollback()
-        print(f'Erro ao atualizar senha do técnico: {erro}')
-        return 0
+        finally:
+            cursor.close()
+            conexao.close()
 
-    finally:
-        cursor.close()
-        conexao.close()
+    def atualizar_tecnico(self, cpf_tecnico_inicial, nome=None, cpf_tecnico=None, email=None):
+        conexao = self.conectar_banco()
 
-def excluir_tecnico(cpf_tecnico):
-    conexao = conectar()
+        try:
+            cursor = conexao.cursor()
 
-    try:
-        cursor = conexao.cursor()
+            cursor.execute("""
+            UPDATE tecnicos 
+            SET nome = COALESCE(%s, nome), 
+            cpf_tecnico = COALESCE(%s, cpf_tecnico),
+            email = COALESCE(%s, email)
+            WHERE cpf_tecnico = %s
+            """, (nome, cpf_tecnico, email, cpf_tecnico_inicial))
 
-        cursor.execute("""
-        DELETE FROM tecnicos
-        WHERE cpf_tecnico = %s
-        """, (cpf_tecnico,))
+            resultado = cursor.rowcount
 
-        resultado = cursor.rowcount
+            if resultado > 0:
+                conexao.commit()
+                return resultado
 
-        if resultado > 0:
-            conexao.commit()
-            return resultado
+            conexao.rollback()
+            return 0
 
-        conexao.rollback()
-        return 0
+        except Exception as erro:
+            conexao.rollback()
+            print(f'Erro ao atualizar técnico: {erro}')
+            return 0
 
-    except Exception as erro:
-        conexao.rollback()
-        print(f'Erro ao excluir técnico: {erro}')
-        return 0
+        finally:
+            cursor.close()
+            conexao.close()
 
-    finally:
-        cursor.close()
-        conexao.close()
+    def alterar_senha_tecnico(self, cpf_tecnico, senha_hash_nova):
+        conexao = self.conectar_banco()
 
+        try:
+            cursor = conexao.cursor()
+
+            cursor.execute("""
+            UPDATE tecnicos
+            SET senha_hash = %s
+            WHERE cpf_tecnico = %s
+            """, (senha_hash_nova, cpf_tecnico))
+
+            resultado = cursor.rowcount
+
+            if resultado > 0:
+                conexao.commit()
+                return resultado
+
+            conexao.rollback()
+            return 0
+
+        except Exception as erro:
+            conexao.rollback()
+            print(f'Erro ao atualizar senha do técnico: {erro}')
+            return 0
+
+        finally:
+            cursor.close()
+            conexao.close()
+
+    def excluir_tecnico(self, cpf_tecnico):
+        conexao = self.conectar_banco()
+
+        try:
+            cursor = conexao.cursor()
+
+            cursor.execute("""
+            DELETE FROM tecnicos
+            WHERE cpf_tecnico = %s
+            """, (cpf_tecnico,))
+
+            resultado = cursor.rowcount
+
+            if resultado > 0:
+                conexao.commit()
+                return resultado
+
+            conexao.rollback()
+            return 0
+
+        except Exception as erro:
+            conexao.rollback()
+            print(f'Erro ao excluir técnico: {erro}')
+            return 0
+
+        finally:
+            cursor.close()
+            conexao.close()
+
+tecnico_repository = TecnicoRepository(conectar)
