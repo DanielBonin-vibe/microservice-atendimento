@@ -26,7 +26,7 @@ def login_service(cpf, senha):
     if tecnico:
         senha_hash = tecnico[5]
 
-        if not verificar_senha(senha, tecnico['senha_hash']):
+        if not verificar_senha(senha, senha_hash):
             return 'CPF ou senha inválido(s).'
 
         token = gerar_token(cpf, 'tecnico')
